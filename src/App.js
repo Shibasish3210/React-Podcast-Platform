@@ -13,46 +13,50 @@ import { setUsers } from "./ReduxToolkit/Slices/userSlice";
 import { useDispatch } from "react-redux";
 import { ToastContainer } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
+import PodcastDetails from "./Pages/Podcasts/PodcastDetails";
+import CreateAnEpisode from "./Pages/Podcasts/CreateAEpisode";
 
 function App() {
-  // const dispatch = useDispatch();
+  const dispatch = useDispatch();
 
-  // useEffect(()=>{
-  //   const unsubscribeAuth = onAuthStateChanged( auth, (user)=>{
-  //     if(user){
-  //       const unsubscribeSnapshot = onSnapshot(doc(db, 'users', user.uid),(userDoc=>{
-  //           if(userDoc.exists()){
-  //             const userData = userDoc.data();
-  //             console.log(userData)
-  //             dispatch(setUsers({
-  //               name: userData.displayName,
-  //               email: userData.email,
-  //               id: userData.uid
-  //             }));
-  //           }
-  //         },
-  //         (error)=> {
-  //           console.log(error);
-  //         }
-  //         )
-  //       );
-  //       return ()=>{
-  //         unsubscribeSnapshot();
-  //       }
-  //     }
-  //   });
-  //   return ()=>{
-  //     unsubscribeAuth();
-  //   }
-  // },[dispatch]);
+  useEffect(()=>{
+    const unsubscribeAuth = onAuthStateChanged( auth, (user)=>{
+      if(user){
+        const unsubscribeSnapshot = onSnapshot(doc(db, 'users', user.uid),userDoc=>{
+            if(userDoc.exists()){
+              const userData = userDoc.data();
+              // console.log(userData)
+              dispatch(setUsers({
+                name: userData.name,
+                email: userData.email,
+                id: userData.uid,
+                dp: userData.dp
+              }));
+            }
+          },
+          error=> {
+            console.log(error);
+          }
+        );
+        return ()=>{
+          unsubscribeSnapshot();
+        }
+      }
+    });
+    return ()=>{
+      unsubscribeAuth();
+    }
+  },[dispatch]);
   return (
     <>
     <Routes>
       <Route path="/" element={<Auth/>}/>
       <Route element={<PrivateRoute/>}>
-        <Route path="/podcasts" element={<Podcasts/>}/>
         <Route path="/start-a-podcast" element={<StartAPodcast/>}/>
         <Route path="/profile" element={<Profile/>}/>
+        <Route path="/podcasts" element={<Podcasts/>}/>
+        <Route path="/podcasts/:id" element={<PodcastDetails/>}/>
+        <Route path="/podcasts/:id/create-an-episode" element={<CreateAnEpisode/>}/>
       </Route>
     </Routes>
     <ToastContainer position='top-right' />

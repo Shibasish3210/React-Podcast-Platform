@@ -18,16 +18,16 @@ const Profile = () => {
                 console.log(error);
             });
         }
+    if(!user){
+        return (
+        <>
+        <Navbar/>
+        <h1 style={{marginTop: '5rem'}}>Loading...</h1>
+        </>
+        );
+    } 
 
-    console.log(user);
-    // if(!user){
-    //     return (
-    //     <>
-    //     <Navbar/>
-    //     <h1 style={{marginTop: '5rem'}}>Loading...</h1>
-    //     </>
-    //     );
-    // } 
+    // console.log(user);
     return (
     <>
         <Navbar/>
@@ -35,9 +35,14 @@ const Profile = () => {
 
         <div className="wrapper">
          <div className="cont">
-            <p>{user.name}</p>
-            <p>{user.email}</p>
-            <p>{user.id}</p>
+            <div className="profilePic">
+                <img src={user.dp} alt="profilePicture" />
+            </div>
+            <div className="info">
+            <p><strong>Name : </strong> <span>{user.name}</span></p>
+            <p><strong>Email : </strong> <span>{user.email}</span></p>
+            <p><strong>User ID : </strong> <span>{user.id}</span></p>
+            </div>
          </div>
          
          <Button value={'Log Out'} exeFunc={handleLogOut}/>

@@ -62,3 +62,36 @@ p{
     box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
     color: white;
 }
+
+.episodes{
+    width: 90vw;
+    margin: auto;
+    margin-bottom: 2rem;
+    display: flex;
+    justify-content: space-between;
+}
+
+.episodes .btn{
+    width: fit-content;
+}
+.auioPlayer-cont{
+    width: 99vw;
+    background-color: var(--theme);
+    
+}
+.rhap_container{
+    background-color: rgb(56, 0, 147) !important;
+    filter:opacity(0.6);
+}
+
+.rhap_time{
+    color: rgb(255, 255, 255) !important;
+}
+
+.rhap_main-controls-button,.rhap_repeat-button,.rhap_volume-button{
+    color: white !important;
+}
+
+.rhap_progress-indicator,.rhap_volume-indicator{
+    background-color: white !important;
+}

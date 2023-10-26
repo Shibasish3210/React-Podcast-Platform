@@ -7,6 +7,7 @@ import CustomFileInput from '../../Components/CustomFileInput';
 import { toast } from 'react-toastify';
 import { auth, db, storage } from '../../Config/firebase';
 import { addDoc, collection } from 'firebase/firestore';
+import { useNavigate } from 'react-router-dom';
 
 const StartAPodcast = () => {
 
@@ -14,6 +15,8 @@ const StartAPodcast = () => {
   const [desc, setDesc] = useState('');
   const [displayImage, setDisplayImage] = useState();
   const [bannerImage, setBannerImage] = useState();
+  
+  const navigate = useNavigate();
 
 
 async function handlePodcastCreation() {
@@ -23,7 +26,7 @@ async function handlePodcastCreation() {
     toast.success('Podcast creation started');
      try{
         // Create a reference to displayImage
-        const displayImageRef = ref(storage, `podcsts/${auth.currentUser.uid}/${Date.now()}`);
+        const displayImageRef = ref(storage, `podcasts/${auth.currentUser.uid}/${Date.now()}`);
         //uploading the display image
         await uploadBytes(displayImageRef, displayImage);
 
@@ -31,7 +34,7 @@ async function handlePodcastCreation() {
         const downloadDP = await getDownloadURL(displayImageRef)
 
         // Create a reference to bannerImage 
-        const bannerImageRef = ref(storage, `podcsts/${auth.currentUser.uid}/${Date.now()}`);
+        const bannerImageRef = ref(storage, `podcasts/${auth.currentUser.uid}/${Date.now()}`);
         //uploading the banner image
         await uploadBytes(bannerImageRef, bannerImage);
 
@@ -48,11 +51,13 @@ async function handlePodcastCreation() {
 
         const docRef = await addDoc(collection(db, 'podcasts'), podcastDetails);
 
-        toast.success('Podcast created successfully');
         setTitle('');
         setDesc('');
         setDisplayImage();
         setBannerImage();
+        toast.success('Podcast created successfully');
+        navigate(`/podcasts/${docRef.id}`)
+
     }catch(e){
       toast.error(e.message);
       console.log(e);
@@ -70,10 +75,10 @@ async function handlePodcastCreation() {
         <Navbar/>
         <h1>Start A Podcast</h1>
         <div className="form-wrapper">
-          <Input setState={setTitle} state={title} type="text" placeholder='Enter Your Full Name' />
-          <Input setState={setDesc} state={desc} type="text" placeholder="Enter Your Email Address"/>
-          <CustomFileInput id='displayImage' setState={setDisplayImage} accept={'image/*'} value="Select Display Image"/>
-          <CustomFileInput id='bannerImage' setState={setBannerImage} accept={'image/*'} value="Select Banner Image"/>
+          <Input setState={setTitle} state={title} type="text" placeholder='Enter Your Podcast Title...' />
+          <Input setState={setDesc} state={desc} type="text" placeholder="Enter Your Podcast Description..."/>
+          <CustomFileInput id='displayImage' setState={setDisplayImage} accept={'image/*'} value="Select Display Image..."/>
+          <CustomFileInput id='bannerImage' setState={setBannerImage} accept={'image/*'} value="Select Banner Image..."/>
           <Button value='Create Podcast' exeFunc={handlePodcastCreation}/>
         </div>
     </>

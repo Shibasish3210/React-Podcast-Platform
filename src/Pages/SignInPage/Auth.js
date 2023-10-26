@@ -1,21 +1,30 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Navbar from '../../Components/Navbar'
 import SignIn from './SignIn';
 import SignUp from './SignUp';
-import { auth, db } from '../../Config/firebase';
+import { auth, db, storage } from '../../Config/firebase';
 import { useDispatch, useSelector } from 'react-redux';
 import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
 import { setUsers } from '../../ReduxToolkit/Slices/userSlice';
 import { toast } from 'react-toastify';
-
+import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 import { useNavigate } from 'react-router-dom';
 import { doc, setDoc } from 'firebase/firestore';
 
+
 const Auth = () => {
   const [haveAccout, setHaveAccount] = useState(false);
+  const [dp, setDp] = useState();
   const userDetails = useSelector(state=> state.users.users);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  useEffect(()=>{
+    if(auth?.currentUser?.uid){
+      toast.error('Please Log Out');
+      navigate('/profile');
+    }
+  },[navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -26,21 +35,31 @@ const Auth = () => {
           (err) => console.log(err)
         );
         const user = userCredential.user;
+
+        // Create a reference to displayImage
+        const displayImageRef = ref(storage, `users-dp/${auth.currentUser.uid}`);
+        //uploading the display image
+        await uploadBytes(displayImageRef, dp);
+        
+        //getting the display image downloadable link
+        const downloadDP = await getDownloadURL(displayImageRef)
+        
         dispatch(setUsers({
           name: userDetails.name,
           email: userDetails.email,
+          dp: downloadDP,
           id: user.uid
       }));
         toast.success('successfully signed up');
         await setDoc(doc(db, 'users', user.uid),{
             name: userDetails.name,
             email: userDetails.email,
+            dp: downloadDP,
             uid: user.uid
         })
         navigate('/profile');
       }
     }catch(error){
-      // const errorCode = error.code;
       const errorMessage = error.message;
       toast.error(errorMessage)
     }
@@ -52,7 +71,7 @@ const Auth = () => {
         <div className="form-wrapper">
         <h1>{haveAccout ? 'Log In' : 'Sign Up'}</h1>
         <form className='form' action="/" onSubmit={handleSubmit}>
-          {haveAccout ? <SignIn setHaveAccount={setHaveAccount}/> : <SignUp setHaveAccount={setHaveAccount}/>}
+          {haveAccout ? <SignIn setHaveAccount={setHaveAccount}/> : <SignUp setDp={setDp} setHaveAccount={setHaveAccount}/>}
         </form>
         </div>
     </>

@@ -18,6 +18,7 @@ body{
     background-repeat: no-repeat;
     min-height: 100vh;
     color: var(--text-primary);
+    overflow-x: hidden;
 }
 
 a{
@@ -51,4 +52,94 @@ h1{
     display: flex;
     flex-direction: column;
     gap: 10rem;
+}
+
+.podcastCard{
+    width: 400px;
+    height: 300px;
+    padding: 1rem;
+    border-radius: 10px;
+    /* border: 2px solid #ffffff; */
+    background: linear-gradient(178deg, rgba(97, 171, 201, 0.932) 1.63%, rgba(106, 31, 219, 0.836) 148.18%);
+    box-shadow: rgba(50, 50, 93, 0.847) 0px 13px 27px -5px, rgba(0, 0, 0, 0.785) 0px 8px 16px -8px;
+    opacity: 0.7;
+}
+.podcastCard:hover{
+    opacity: 1;
+    transition: opacity 0.3s linear;
+}
+.podcastCard img{
+    width: 100%;
+    height: 90%;
+    margin-bottom: 7px;
+    border-top-right-radius: 5px;
+    border-top-left-radius: 5px;
+}
+
+.podcastCard-info{
+    display: flex;
+    justify-content: space-between;
+}
+
+.podcastCard-info > * {
+    font-size: 1.25rem;
+    text-transform: capitalize;
+}
+
+.pod-wrapper{
+    display: flex;
+    gap: 2rem;
+    width: 90vw;
+    margin: auto;
+    flex-wrap: wrap;
+}
+
+.pod-desc{
+    font-size: 0.9rem;
+    letter-spacing: 1px;
+    color: var(--text-primary);
+}
+
+.heading{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.heading > .btn {
+    width: fit-content;
+}
+
+.pod-det-wrapper{
+    width: 90vw;
+    margin: auto; 
+    text-transform: capitalize;
+    margin-bottom: 4rem;
+}
+
+.pod-det-wrapper > img {
+    width: 100%;
+    height: 350px;
+    object-fit: cover;
+    border-radius: 1rem;
+    margin-bottom: 1rem;
+}
+
+.profilePic{
+    width: 200px;
+    height: 200px;
+    margin: auto;
+}
+.info{
+    width: 400px;
+    margin: auto;
+    margin-top: 2rem;
+}
+
+.profilePic>img{
+    border-radius: 50%;
+    width: 90%;
+    height: 90%;
+    object-fit: cover;
+    background-blend-mode: multiply;
 }

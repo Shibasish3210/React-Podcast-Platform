@@ -22,7 +22,7 @@ const SignIn = ({setHaveAccount}) => {
             const user = userCredentials.user;
             console.log(user)
             console.log(userCredentials)
-            dispatch(setUsers({name: user.displayName, email, password, id:user.uid}));
+            dispatch(setUsers({name: user.displayName, email, password, id:user.uid, dp:user.dp}));
             toast.success("successfully logged in!");
             setEmail('');
             setPassword('');
