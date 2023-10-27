@@ -15,6 +15,7 @@ import { doc, setDoc } from 'firebase/firestore';
 const Auth = () => {
   const [haveAccout, setHaveAccount] = useState(false);
   const [dp, setDp] = useState();
+  const [loading, setLoading] = useState(false);
   const userDetails = useSelector(state=> state.users.users);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -28,6 +29,7 @@ const Auth = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     try{
       if(userDetails && !haveAccout && userDetails.email && userDetails.password){
         const userCredential = await createUserWithEmailAndPassword(auth, userDetails.email, userDetails.password);
@@ -63,6 +65,7 @@ const Auth = () => {
       const errorMessage = error.message;
       toast.error(errorMessage)
     }
+    setLoading(false);
 }
 
   return (
@@ -71,7 +74,7 @@ const Auth = () => {
         <div className="form-wrapper">
         <h1>{haveAccout ? 'Log In' : 'Sign Up'}</h1>
         <form className='form' action="/" onSubmit={handleSubmit}>
-          {haveAccout ? <SignIn setHaveAccount={setHaveAccount}/> : <SignUp setDp={setDp} setHaveAccount={setHaveAccount}/>}
+          {haveAccout ? <SignIn setHaveAccount={setHaveAccount}/> : <SignUp loading={loading} setDp={setDp} setHaveAccount={setHaveAccount}/>}
         </form>
         </div>
     </>

@@ -1,11 +1,25 @@
 .navbar{
     color: #afafaf;
-    padding: 1rem;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 2rem;
+    width: 90vw;
+    margin: auto;
+    padding: 0.5rem 0;
+}
+
+.menu{
+    display: none;
+}
+
+nav{
+    justify-content: space-between;
     font-size: 1.2rem;
+    padding: 1rem;
+    display: flex;
+    padding-right: 6rem;
+    align-items: center;
 }
 
 li{
@@ -94,4 +108,23 @@ p{
 
 .rhap_progress-indicator,.rhap_volume-indicator{
     background-color: white !important;
+}
+
+@media screen and (width <= 650px) {
+    .menu{
+        display: block;
+        font-size: 1.5rem;
+        margin-left: auto;
+    }
+    nav{
+        width: 95vw;
+        margin: auto;
+        padding: 1rem;
+    }
+
+    .navbar{
+        gap: 0.75rem;
+        /* display: none; */
+    }
+
 }

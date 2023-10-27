@@ -8,6 +8,7 @@ import { toast } from 'react-toastify';
 import { auth, db, storage } from '../../Config/firebase';
 import { addDoc, collection } from 'firebase/firestore';
 import { useNavigate } from 'react-router-dom';
+import Loader from '../../Components/Loader';
 
 const StartAPodcast = () => {
 
@@ -15,13 +16,13 @@ const StartAPodcast = () => {
   const [desc, setDesc] = useState('');
   const [displayImage, setDisplayImage] = useState();
   const [bannerImage, setBannerImage] = useState();
+  const [loading, setLoading] = useState(false);
   
   const navigate = useNavigate();
 
 
 async function handlePodcastCreation() {
-    console.log(displayImage, bannerImage);
-
+   setLoading(true)
    if(title && desc && displayImage && bannerImage){
     toast.success('Podcast creation started');
      try{
@@ -48,25 +49,27 @@ async function handlePodcastCreation() {
           bannerImage: downloadBanner,
           owner: auth.currentUser.uid
         }
-
+        
         const docRef = await addDoc(collection(db, 'podcasts'), podcastDetails);
-
+        
         setTitle('');
         setDesc('');
         setDisplayImage();
         setBannerImage();
         toast.success('Podcast created successfully');
+        setLoading(false);
         navigate(`/podcasts/${docRef.id}`)
-
-    }catch(e){
-      toast.error(e.message);
-      console.log(e);
+        
+      }catch(e){
+        toast.error(e.message);
+        console.log(e);
+        setLoading(false);
     }
   }else{
     toast.error('please fill all the fields');
+    setLoading(false);
   }
 
-    
 }
 
 
@@ -79,7 +82,7 @@ async function handlePodcastCreation() {
           <Input setState={setDesc} state={desc} type="text" placeholder="Enter Your Podcast Description..."/>
           <CustomFileInput id='displayImage' setState={setDisplayImage} accept={'image/*'} value="Select Display Image..."/>
           <CustomFileInput id='bannerImage' setState={setBannerImage} accept={'image/*'} value="Select Banner Image..."/>
-          <Button value='Create Podcast' exeFunc={handlePodcastCreation}/>
+          <Button disabled={loading} value={loading ? <Loader width={60} height={60}/> : 'Create Podcast'} exeFunc={handlePodcastCreation}/>
         </div>
     </>
   )

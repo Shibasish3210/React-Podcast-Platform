@@ -8,17 +8,20 @@ import { auth, db, storage } from '../../Config/firebase';
 import Navbar from '../../Components/Navbar';
 import { useNavigate, useParams } from 'react-router-dom';
 import { addDoc, collection } from 'firebase/firestore';
+import Loader from '../../Components/Loader';
 
 const CreateAnEpisode = () => {
   const [title, setTitle] = useState('');
   const [desc, setDesc] = useState('');
   const [audio, setAudio] = useState();
+  const [loading, setLoading] = useState(false);
 
   const { id } = useParams();
   const navigate = useNavigate();
 
   const handleEpisodeCreation = async (e) => {
     e.preventDefault();
+    setLoading(true);
     if(title && desc && audio && id){
       toast.success('Episode creation started');
       try{
@@ -46,13 +49,16 @@ const CreateAnEpisode = () => {
         setDesc('');
         setAudio();
         navigate(`/podcasts/${id}`);
+        setLoading(false);
 
       }catch(e){
         toast.error(e.message);
         console.log(e);
+        setLoading(false);
       };
   }else{
     toast.error('please fill all the fields');
+    setLoading(false);
   }
 
 }
@@ -65,7 +71,7 @@ const CreateAnEpisode = () => {
           <Input setState={setTitle} state={title} type="text" placeholder='Enter Your Episode Titile...' />
           <Input setState={setDesc} state={desc} type="text" placeholder="Enter Your Episode Description..."/>
           <CustomFileInput id='displayImage' setState={setAudio} accept={'audio/*'} value="Select Audio File For Episode..."/>
-          <Button value='Create Episode' exeFunc={handleEpisodeCreation}/>
+          <Button disabled={loading} value={loading ? <Loader width={60} height={60}/> : 'Create Episode'} exeFunc={handleEpisodeCreation}/>
         </div>
     </form>
     </>

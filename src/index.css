@@ -55,7 +55,7 @@ h1{
 }
 
 .podcastCard{
-    width: 400px;
+    width: 350px;
     height: 300px;
     padding: 1rem;
     border-radius: 10px;
@@ -92,6 +92,7 @@ h1{
     width: 90vw;
     margin: auto;
     flex-wrap: wrap;
+    justify-content: center;
 }
 
 .pod-desc{
@@ -142,4 +143,33 @@ h1{
     height: 90%;
     object-fit: cover;
     background-blend-mode: multiply;
+}
+
+@media screen and (width <= 865px) {
+    nav{
+        font-size: 1rem;
+    }
+
+    .podcastCard{
+        width: 500px;
+        height: 450px;
+    }
+}
+@media screen and (width <= 530px) {
+    .podcastCard{
+        width: 400px;
+        height: 350px;
+    }
+    nav{
+        /* flex-direction: column; */
+        justify-content: flex-end;
+    }
+
+    .info > *{
+        font-size: 0.85rem;
+    }
+
+    .navbar{
+        gap:0.25rem;
+    }
 }

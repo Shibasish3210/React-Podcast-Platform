@@ -7,15 +7,18 @@ import { setUsers } from '../../ReduxToolkit/Slices/userSlice';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../../Config/firebase';
 import { toast } from 'react-toastify';
+import Loader from '../../Components/Loader';
 
 const SignIn = ({setHaveAccount}) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [loading, setLoading] = useState(false);
 
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
     async function handleLogIn() {
+        setLoading(true);
         try{
             //Log in user
             const userCredentials = await signInWithEmailAndPassword(auth, email, password);
@@ -26,11 +29,13 @@ const SignIn = ({setHaveAccount}) => {
             toast.success("successfully logged in!");
             setEmail('');
             setPassword('');
+            setLoading(false);
             setTimeout(() => {
                 navigate('/profile')
             }, 700);
         }catch(error){
             const errorMessage = error.message;
+            setLoading(false);
             toast.error(errorMessage)
         }
     }
@@ -38,7 +43,7 @@ const SignIn = ({setHaveAccount}) => {
     <>
           <Input setState={setEmail} state={email} type="text" placeholder="Enter Your Email"/>
           <Input setState={setPassword} state={password} type="password" placeholder="Enter Your Password"/>
-          <Button type="submit" value='Log In' exeFunc={handleLogIn}/>
+          <Button type="submit" disabled={loading} value={loading ? <Loader width={60} height={60}/> : 'Log In'} exeFunc={handleLogIn}/>
           <p>Don't have an account? <Link onClick={()=>setHaveAccount(false)} href="/signup">Sign Up</Link></p>
           </>
   )

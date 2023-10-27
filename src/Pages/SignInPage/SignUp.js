@@ -6,18 +6,21 @@ import { useDispatch } from 'react-redux';
 import { setUsers } from '../../ReduxToolkit/Slices/userSlice';
 import CustomFileInput from '../../Components/CustomFileInput';
 import { toast } from 'react-toastify';
+import Loader from '../../Components/Loader';
 
 
-const SignUp = ({setHaveAccount,setDp}) => {
+const SignUp = ({setHaveAccount,setDp,loading}) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [profilePicture, setProfilePicture] = useState();
   const [cPassword, setCPassword] = useState('');
+  
 
   const dispatch = useDispatch();
 
 async function handleSignUp() {
+    
     if(password !== cPassword){
       toast.error('Both Password & Confirm Password Should Match');
       return;
@@ -43,7 +46,7 @@ async function handleSignUp() {
             <CustomFileInput id='profilePic' setState={setProfilePicture} accept={'image/*'} value="Select Your Profile Picture..."/>
             <Input setState={setPassword} state={password} type="password" placeholder="Enter Your Password..."/>
             <Input setState={setCPassword} state={cPassword} type="password" placeholder="Please Confirm Your Password..."/>
-            <Button type="submit" value='Sign In' exeFunc={handleSignUp}/>
+            <Button type="submit" disabled={loading} value={loading ? <Loader width={60} height={60}/> : 'Sign Up'} exeFunc={handleSignUp}/>
             <p>Already have an account? <Link onClick={()=>setHaveAccount(true)} href="/signin">Sign In</Link></p>
           </>
   )

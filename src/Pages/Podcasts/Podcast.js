@@ -1,14 +1,17 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import Navbar from '../../Components/Navbar'
 import { useDispatch, useSelector } from 'react-redux';
 import { collection, onSnapshot, query } from 'firebase/firestore';
 import { db } from '../../Config/firebase';
 import { setPodcasts } from '../../ReduxToolkit/Slices/podcastSlice';
 import Podcast from '../../Components/Podcast';
+import Input from '../../Components/Input';
 
 const Podcasts = () => {
 
   const podcasts = useSelector(state => state.podcasts.podcasts);
+  const [search, setSearch] = useState('');
+  const [filteredPodcast, setFilteredPodcast] = useState([]);
   const dispatch = useDispatch();
 
   useEffect(()=>{
@@ -30,6 +33,12 @@ const Podcasts = () => {
     }
   },[dispatch]);
 
+  useEffect(()=>{
+    setFilteredPodcast(podcasts.filter(podcast=>{
+      return podcast.title.toLowerCase().includes(search.trim().toLowerCase());
+    })); 
+  },[search,podcasts])
+
   
 
   return (
@@ -37,11 +46,20 @@ const Podcasts = () => {
         <Navbar/>
         <h1>Podcast</h1>
         <div className="pod-wrapper">
+        <Input setState={setSearch} state={search} type="text" placeholder='Enter Podcast Name To Search...'/>
           {podcasts.length > 0 ? 
-          podcasts.map((podcast) => {
-            return <Podcast key={podcast.id} id={podcast.id} displayImg={podcast.displayImage} title={podcast.title} />
-          }):
-          <p>No podcasts yet</p>}
+          <>
+            {
+              filteredPodcast.length > 0 ?
+              filteredPodcast?.map((podcast) => {
+                return <Podcast key={podcast.id} id={podcast.id} displayImg={podcast.displayImage} title={podcast.title} />
+              }):
+              <p style={{width : '100%', textAlign: 'center' , marginTop: '4rem'}}>No such podcasts found !...</p>
+
+            }
+          </>
+          :
+          <p style={{width : '100%', textAlign: 'center' , marginTop: '4rem'}}>No podcasts yet !...</p>}
         </div>
     </>
   )

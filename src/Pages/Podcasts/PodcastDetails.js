@@ -17,19 +17,20 @@ const PodcastDetails = () => {
     const navigate = useNavigate();
     
     useEffect(()=>{
+        const getDocument = async () => {
+          const docRef = doc(db, 'podcasts', id);
+          const docSnap = await getDoc(docRef);
+          if(docSnap.exists()){
+              const data = docSnap.data();
+              setCurrPodcast({id:id,...data});
+          }
+        }
         if(id){ 
             getDocument();
         }
     },[id]);
 
-    const getDocument = async () => {
-        const docRef = doc(db, 'podcasts', id);
-        const docSnap = await getDoc(docRef);
-        if(docSnap.exists()){
-            const data = docSnap.data();
-            setCurrPodcast({id:id,...data});
-        }
-    }
+    
 
     useEffect(()=>{
         const unsubscribeSnapshot = onSnapshot(query(collection(db, 'podcasts', id, 'episodes')),
@@ -47,7 +48,7 @@ const PodcastDetails = () => {
         return ()=>{
           unsubscribeSnapshot();
         }
-      },[]);
+      },[id]);
     
       const playEpisode = (audio)=>{
         console.log('playing ' + audio);
