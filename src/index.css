@@ -19,6 +19,8 @@ body{
     min-height: 100vh;
     color: var(--text-primary);
     overflow-x: hidden;
+    max-height: fit-content;
+    padding-bottom: 2rem;
 }
 
 a{
@@ -52,6 +54,7 @@ h1{
     display: flex;
     flex-direction: column;
     gap: 10rem;
+    padding-bottom: 5rem;
 }
 
 .podcastCard{
@@ -101,6 +104,10 @@ h1{
     color: var(--text-primary);
 }
 
+.Toastify{
+    background-color: var(--theme) !important;
+}
+
 .heading{
     display: flex;
     justify-content: space-between;
@@ -124,6 +131,10 @@ h1{
     object-fit: cover;
     border-radius: 1rem;
     margin-bottom: 1rem;
+}
+
+.episode-cont{
+    margin-bottom: 7.5rem;
 }
 
 .profilePic{
@@ -154,6 +165,16 @@ h1{
         width: 500px;
         height: 450px;
     }
+
+    h1{
+        font-size: 1.5rem;
+    }
+    .customInput{
+        font-size: 0.85rem ;
+    }
+    .btn{
+        font-size: 0.9rem;
+    }
 }
 @media screen and (width <= 530px) {
     .podcastCard{
@@ -171,5 +192,24 @@ h1{
 
     .navbar{
         gap:0.25rem;
+    }
+
+    h1{
+        font-size: 1.35rem;
+    }
+    .customInput{
+        font-size: 0.75rem ;
+    }
+    .btn{
+        font-size: 0.8rem;
+    }
+    p{
+        font-size: 0.65rem;
+    }
+}
+
+@media screen and (width <= 475px) {
+    .podcastCard{
+        width: 320px;
     }
 }

@@ -76,10 +76,10 @@ const PodcastDetails = () => {
         {
             currPodcastEpisodes.length > 0?
 
-            <>
+            <div className='episode-cont'>
             <h1 style={{textAlign: 'left', width: '90vw', margin:'auto', marginBottom: '2rem'}}>Episodes</h1>
             {currPodcastEpisodes.map((currPodcastEpisode) =><Episodes key={currPodcastEpisode.id} title={currPodcastEpisode.title} desc={currPodcastEpisode.description} audio={currPodcastEpisode.audio} onExe={(audio)=>playEpisode(audio)}/>) }
-            </>
+            </div>
             :
             <>
             </>

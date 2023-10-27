@@ -89,9 +89,12 @@ p{
     width: fit-content;
 }
 .auioPlayer-cont{
-    width: 99vw;
+    width: 100vw;
     background-color: var(--theme);
-    
+    margin: auto;
+    position: fixed;
+    left: 0;
+    bottom: 0;
 }
 .rhap_container{
     background-color: rgb(56, 0, 147) !important;
@@ -127,4 +130,16 @@ p{
         /* display: none; */
     }
 
+    p{
+        font-size: 0.65rem;
+    }
+
+}
+
+@media screen and (width <= 530px) {
+    .navbar{
+        font-size: 0.6rem;
+        gap: 0;
+    }
+    
 }
