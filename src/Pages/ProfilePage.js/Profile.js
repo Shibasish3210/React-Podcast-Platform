@@ -19,12 +19,12 @@ const Profile = () => {
             });
         }
     if(!user){
-        return (
-        <>
-        <Navbar/>
-        <h1 style={{marginTop: '5rem'}}>Loading...</h1>
-        </>
-        );
+    return (
+    <>
+    <Navbar/>
+    <h1 style={{marginTop: '5rem'}}>Loading...</h1>
+    </>
+    );
     } 
 
     // console.log(user);
@@ -36,12 +36,12 @@ const Profile = () => {
         <div className="wrapper">
          <div className="cont">
             <div className="profilePic">
-                <img src={user.dp} alt="profilePicture" />
+                <img src={user?.dp} alt="profilePicture" />
             </div>
             <div className="info">
-            <p><strong>Name : </strong> <span>{user.name}</span></p>
-            <p><strong>Email : </strong> <span>{user.email}</span></p>
-            <p><strong>User ID : </strong> <span>{user.id}</span></p>
+            <p><strong>Name : </strong> <span>{user?.name}</span></p>
+            <p><strong>Email : </strong> <span>{user?.email}</span></p>
+            <p><strong>User ID : </strong> <span>{user?.id}</span></p>
             </div>
          </div>
          

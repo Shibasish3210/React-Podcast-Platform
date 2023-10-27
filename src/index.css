@@ -12,15 +12,19 @@
   --h-size : 2rem;
 }
 
+html,body{
+    overflow-x: hidden;
+}
+
 body{
     background: rgb(163,171,255);
     background: var(--theme);
     background-repeat: no-repeat;
     min-height: 100vh;
     color: var(--text-primary);
-    overflow-x: hidden;
     max-height: fit-content;
     padding-bottom: 2rem;
+    
 }
 
 a{
