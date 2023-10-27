@@ -26,7 +26,7 @@ async function handleSignUp() {
       return;
     }
 
-    if(!name && !email && !profilePicture ){
+    if(!name || !email || !profilePicture || !password || !cPassword ){
       toast.error('Please fill all the fields');
       return;
     }
