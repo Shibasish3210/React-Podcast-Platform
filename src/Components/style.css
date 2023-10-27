@@ -144,6 +144,13 @@ p{
     .navbar{
         font-size: 0.6rem;
         gap: 0;
+        margin-left: -15px;
+    }
+    nav{
+        padding-left: 0;
+    }
+    a{
+        padding: 0.5rem 0.55rem !important;
     }
     
 }
