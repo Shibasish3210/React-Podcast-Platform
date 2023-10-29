@@ -57,7 +57,7 @@ h1{
     padding: 2rem;
     display: flex;
     flex-direction: column;
-    gap: 10rem;
+    gap: 5rem;
     padding-bottom: 5rem;
 }
 
@@ -145,11 +145,55 @@ h1{
     width: 200px;
     height: 200px;
     margin: auto;
+    position: relative;
+}
+
+.profilePic svg{
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+.profilePic input{
+    display: none;
 }
 .info{
-    width: 400px;
-    margin: auto;
     margin-top: 2rem;
+}
+.info div{
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 1rem;
+}
+
+.info div div{
+    flex-grow: 1;
+    display: flex;
+}
+
+.info div div .customInput{
+    width: 85% !important;
+    display: inline;
+    padding: 0;
+    padding: 0.5rem;
+    border: 2px solid transparent;
+    border-bottom: 2px solid #68636a;
+    border-radius: 0;
+    margin: 0.5rem;
+    margin-left: 0;
+}
+
+.btn-cont{
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 5rem;
+    row-gap: 2rem;
+}
+
+.btn-cont .btn{
+    width: 30%;
+    padding: 0.75rem;
 }
 
 .profilePic>img{
@@ -158,6 +202,26 @@ h1{
     height: 90%;
     object-fit: cover;
     background-blend-mode: multiply;
+}
+.modal-cont{
+    position: fixed;
+    inset: 0;
+    color: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(2px);
+}
+
+.modal{
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #000;
+    width: 75%;
+    height: 70%;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
 }
 
 @media screen and (width <= 865px) {
@@ -190,12 +254,13 @@ h1{
         justify-content: flex-end;
     }
 
-    .info > *{
-        font-size: 0.85rem;
-    }
 
     .navbar{
         gap:0.25rem;
+    }
+
+    .btn-cont .btn{
+        width: 100%;
     }
 
     h1{
@@ -215,5 +280,22 @@ h1{
 @media screen and (width <= 475px) {
     .podcastCard{
         width: 320px;
+    }
+
+    .info div{
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .info div strong, .info div div {
+        width: 100%;
+        flex-direction: row;
+    }
+    
+    .info div div input{
+        padding-left: 0 !important;
+        width: 90% !important;
+        margin-top: 0 !important;
+        margin-right: 0 !important;
     }
 }

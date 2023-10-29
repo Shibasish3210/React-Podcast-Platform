@@ -1,52 +1,217 @@
-import React from 'react'
-import Navbar from '../../Components/Navbar'
-import { useSelector } from 'react-redux';
+import React, { useEffect, useRef, useState } from 'react';
+import Navbar from '../../Components/Navbar';
 import Button from '../../Components/Button';
-import { signOut } from 'firebase/auth';
-import { auth } from '../../Config/firebase';
+import { EmailAuthProvider, deleteUser, reauthenticateWithCredential, sendEmailVerification, signOut, updateEmail, updateProfile, verifyBeforeUpdateEmail } from 'firebase/auth';
+import { auth, db, storage } from '../../Config/firebase';
 import { toast } from 'react-toastify';
+import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
+import { FiEdit3, FiCheck } from "react-icons/fi";
+import Input from '../../Components/Input';
+import { doc, updateDoc } from 'firebase/firestore';
+import PromptCredentials from './PromptCredentials';
 
 const Profile = () => {
-    const user = useSelector(state=>state.users.users)
+    const [name, setName] = useState('');
+    const [email, setEmail] = useState('');
+    const [photoURL, setPhotoURL] = useState('');
+    const [displayImage, setDisplayImage] = useState();
+    const [isEditingDP, setIsEditingDP] = useState(false);
+    const [isEditingName, setIsEditingName] = useState(false);
+    const [isEditingEmail, setIsEditingEmail] = useState(false);
+    const [isDelAcc, setIsDelAcc] = useState(false);
+    const [reAuthEmail, setReAuthEmail] = useState('');
+    const [reAuthPass, setReAuthPass] = useState('');
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [actionType, setActionType] = useState('');
+    const imageRef = useRef(null);
 
+    const user = auth.currentUser;
+    useEffect(()=>{
+        setName(user?.displayName);
+        setEmail(user?.email);
+        setPhotoURL(user?.photoURL);
+    },[user?.displayName, user?.email, user?.photoURL]);
+
+    //uploading actual updated image and perform changes on db of user display image
+    useEffect(() => {
+        async function uploadImage_setImage(){
+            if(displayImage){
+                // Create a reference to displayImage
+                const displayImageRef = ref(storage, `users-dp/${auth.currentUser.uid}`);
+                //uploading the display image
+                await uploadBytes(displayImageRef, displayImage);
+                
+                //getting the display image downloadable link
+                const imageUrl = await getDownloadURL(displayImageRef)
+                await updateProfile(user, {photoURL: imageUrl }).catch((error) => {
+                    toast.error(error.message);
+                });
+                const docref = doc(db, 'users', user.uid);
+                await updateDoc(docref,{
+                    dp: imageUrl
+                })
+                setPhotoURL(imageUrl);
+                toast.success('Display image Updated Successfully');
+            }
+        }
+        setDisplayImage();
+        setIsEditingDP(false);
+        return ()=>{
+            return uploadImage_setImage();
+        }
+    },[displayImage, user])
+
+    //firing up setting the reAuthentication process
+    const handleSensitiveData = (type) => {
+        if(type === 'email'){
+            setActionType('Send Verification Mail');
+            setIsEditingEmail(!isEditingEmail);
+            if(isEditingEmail){
+                setIsModalOpen(true);
+            }
+        }else if(type === 'delete'){
+            setActionType('Delete Account')
+            setIsDelAcc(true);
+            setIsModalOpen(true);
+        }else{
+            return;
+        }
+    }
+
+    // Re Authentication of user if he wants to delete acc or update email
+    const handleReAuthentication = async () => {
+        setIsModalOpen(false);
+        // EmailAuthProvider.credential(reAuthEmail, reAuthPass);
+        // const credential = EmailAuthCredential
+        const authCredential = EmailAuthProvider.credential(reAuthEmail, reAuthPass);
+        try{
+            const userCredential = await reauthenticateWithCredential(user, authCredential);
+            console.log(userCredential);
+            if(isDelAcc){
+                await handleDeletion();
+            }else{
+                // await sendEmailVerification(auth.currentUser);
+                // toast.success('Email Verification Sent');
+                await handleEmailUpdation();
+            }
+        }catch(err){
+            toast.error(err.message);
+        }
+        
+    }
+    
+    //firing the image updation process
+    const handleImageUpdation = () => {
+        setIsEditingDP(true);
+        imageRef.current.click();
+    }
+
+    //handle changing username of profile
+    const handleNameUpdation = async () => {
+        setIsEditingName(!isEditingName);
+        if(isEditingName){
+            await updateProfile(user, {displayName: name }).catch((error) => {
+                toast.error(error.message);
+            });
+            const docref = doc(db, 'users', user.uid);
+            await updateDoc(docref,{
+                name
+            })
+            toast.success('Name Updated Successfully');
+        }
+    }
+
+    //handle email updation of account
+    const handleEmailUpdation = async () => {
+        try {
+            await verifyBeforeUpdateEmail(user, email);
+            const docref = doc(db, 'users', user.uid);
+            await updateDoc(docref,{
+                email
+            })
+            toast.success('Email Verification Mail Has Been Sent');
+            toast.success('You Will Be Logged Out Once You Verify');
+        } catch (error) {
+            toast.error(error.message);
+        }
+        setIsEditingEmail(false);
+    }
+    
+    //handling Deletion of Account
+    const handleDeletion = async () => {
+        try{
+            await deleteUser(user)
+            toast.success('Account Deleted Successfully');
+        }catch(error){
+            toast.error(error.message);
+        };
+    }
+
+
+    //handling logging out of the account
     const handleLogOut = () => {
         signOut(auth)
             .then(() => {
                 toast.success('Successfully logged out');
             })
             .catch((error) => {
-                console.log(error);
+                toast.error(error.message);
             });
-        }
-    if(!user){
+    }
+    
     return (
-    <>
-    <Navbar/>
-    <h1 style={{marginTop: '5rem'}}>Loading...</h1>
-    </>
-    );
-    } 
-
-    // console.log(user);
-    return (
-    <>
+        <>
         <Navbar/>
         <h1>Profile</h1>
 
         <div className="wrapper">
          <div className="cont">
             <div className="profilePic">
-                <img src={user?.dp} alt="profilePicture" />
+                <img src={photoURL} alt="profilePicture" />
+                <FiEdit3 onClick={handleImageUpdation}/>
+                <input disabled={isEditingDP} type="file" onChange={e=>setDisplayImage(e.target.files[0])} ref={imageRef} accept='image/*' />
             </div>
             <div className="info">
-            <p><strong>Name : </strong> <span>{user?.name}</span></p>
-            <p><strong>Email : </strong> <span>{user?.email}</span></p>
-            <p><strong>User ID : </strong> <span>{user?.id}</span></p>
+            <div>
+                <strong>Name : </strong>
+                <div>
+                    <Input disabled={!isEditingName} setState={setName} state={name} type="text" placeholder='Enter Your Full Name...' /> 
+                    {isEditingName ? <FiCheck onClick={handleNameUpdation}/> : <FiEdit3 onClick={handleNameUpdation}/>}
+                </div>
+            </div> 
+            <div>
+                <strong>Email : </strong>
+                <div>
+                    <Input disabled={!isEditingEmail} setState={setEmail} state={email} type="text" placeholder='Enter Your Email...' />
+                    {isEditingEmail ? <FiCheck onClick={()=>handleSensitiveData('email')}/> : <FiEdit3 onClick={()=>handleSensitiveData('email')}/>}
+                </div>
+            </div> 
+            <div>
+                <strong>User ID : </strong>
+                <div>
+                <Input disabled={true}  state={user.uid} type="text"/>
+                </div>
+            </div>
             </div>
          </div>
          
-         <Button value={'Log Out'} exeFunc={handleLogOut}/>
+         <div className="btn-cont">
+            <Button value={'Log Out'} exeFunc={handleLogOut}/>
+            <Button value={'Delete Acc'} exeFunc={()=>handleSensitiveData('delete')}/>
+         </div>
         </div>
+
+        {isModalOpen && 
+        <PromptCredentials 
+        email={reAuthEmail} 
+        password={reAuthPass} 
+        setEmail={setReAuthEmail} 
+        setPassword={setReAuthPass}
+        setIsModalOpen={setIsModalOpen}
+        setIsEditingEmail={setIsEditingEmail}
+        exeFunc={handleReAuthentication}
+        actionType={actionType} 
+        />}
     </>
   )
 }

@@ -42,6 +42,12 @@ li{
     color: #ffffff;
 }
 
+.specialInput{
+    border: 2px solid transparent !important;
+    display: inline;
+    width: fit-content;
+}
+
 .customInput::placeholder{
     color: #6368a3;
 }

@@ -21,15 +21,15 @@ const SignUp = ({setHaveAccount,setDp,loading}) => {
 
 async function handleSignUp() {
     
+  if(!name || !email || !profilePicture || !password || !cPassword ){
+    toast.error('Please fill all the fields');
+    return;
+  }
     if(password !== cPassword){
       toast.error('Both Password & Confirm Password Should Match');
       return;
     }
 
-    if(!name || !email || !profilePicture || !password || !cPassword ){
-      toast.error('Please fill all the fields');
-      return;
-    }
     setDp(profilePicture);
     dispatch(setUsers({name, email, password}));
     setProfilePicture();

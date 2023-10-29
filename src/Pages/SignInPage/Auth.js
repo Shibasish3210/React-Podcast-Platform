@@ -33,11 +33,8 @@ const Auth = () => {
     try{
       if(userDetails && !haveAccout && userDetails.email && userDetails.password){
         const userCredential = await createUserWithEmailAndPassword(auth, userDetails.email, userDetails.password);
-        await updateProfile(auth.currentUser, { displayName: userDetails.name }).catch(
-          (err) => console.log(err)
-        );
         const user = userCredential.user;
-
+        
         // Create a reference to displayImage
         const displayImageRef = ref(storage, `users-dp/${auth.currentUser.uid}`);
         //uploading the display image
@@ -46,6 +43,9 @@ const Auth = () => {
         //getting the display image downloadable link
         const downloadDP = await getDownloadURL(displayImageRef)
         
+        await updateProfile(auth.currentUser, { displayName: userDetails.name, photoURL: downloadDP}).catch(
+          (err) => console.log(err)
+        );
         dispatch(setUsers({
           name: userDetails.name,
           email: userDetails.email,
