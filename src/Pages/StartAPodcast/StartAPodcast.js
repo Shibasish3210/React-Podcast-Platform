@@ -27,7 +27,8 @@ async function handlePodcastCreation() {
     toast.success('Podcast creation started');
      try{
         // Create a reference to displayImage
-        const displayImageRef = ref(storage, `podcasts/${auth.currentUser.uid}/${Date.now()}`);
+        const displayTimeStamp = Date.now();
+        const displayImageRef = ref(storage, `podcasts/${auth.currentUser.uid}/${displayTimeStamp}`);
         //uploading the display image
         await uploadBytes(displayImageRef, displayImage);
 
@@ -35,17 +36,19 @@ async function handlePodcastCreation() {
         const downloadDP = await getDownloadURL(displayImageRef)
 
         // Create a reference to bannerImage 
-        const bannerImageRef = ref(storage, `podcasts/${auth.currentUser.uid}/${Date.now()}`);
+        const bannerTimeStamp = Date.now();
+        const bannerImageRef = ref(storage, `podcasts/${auth.currentUser.uid}/${bannerTimeStamp}`);
         //uploading the banner image
         await uploadBytes(bannerImageRef, bannerImage);
 
         //getting the banner image downloadable link
         const downloadBanner = await getDownloadURL(bannerImageRef);
-
         const podcastDetails = {
           title: title,
           description: desc,
+          displayTimeStamp: displayTimeStamp.toString(),
           displayImage: downloadDP,
+          bannerTimeStamp : bannerTimeStamp.toString(),
           bannerImage: downloadBanner,
           owner: auth.currentUser.uid
         }
@@ -66,7 +69,7 @@ async function handlePodcastCreation() {
         setLoading(false);
     }
   }else{
-    toast.error('please fill all the fields');
+    toast.error('Please fill all the fields');
     setLoading(false);
   }
 

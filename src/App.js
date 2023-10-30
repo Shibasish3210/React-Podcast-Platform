@@ -16,6 +16,8 @@ import 'react-toastify/dist/ReactToastify.css';
 import PodcastDetails from "./Pages/Podcasts/PodcastDetails";
 import CreateAnEpisode from "./Pages/Podcasts/CreateAEpisode";
 import Home from "./Pages/Home/Home";
+import EditAnEpisode from "./Pages/Podcasts/EditAnEpisode";
+import EditPodcast from "./Pages/Podcasts/EditPodcast";
 
 function App() {
   const dispatch = useDispatch();
@@ -58,7 +60,9 @@ function App() {
         <Route path="/profile" element={<Profile/>}/>
         <Route path="/podcasts" element={<Podcasts/>}/>
         <Route path="/podcasts/:id" element={<PodcastDetails/>}/>
+        <Route path="/podcasts/:id/edit-podcast" element={<EditPodcast/>}/>
         <Route path="/podcasts/:id/create-an-episode" element={<CreateAnEpisode/>}/>
+        <Route path="/podcasts/:id/update-an-episode" element={<EditAnEpisode/>}/>
       </Route>
     </Routes>
     <ToastContainer position='top-right' />

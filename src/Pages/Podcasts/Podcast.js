@@ -1,15 +1,14 @@
 import React, { useEffect, useState } from 'react'
 import Navbar from '../../Components/Navbar'
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { collection, onSnapshot, query } from 'firebase/firestore';
 import { db } from '../../Config/firebase';
-import { setPodcasts } from '../../ReduxToolkit/Slices/podcastSlice';
 import Podcast from '../../Components/Podcast';
 import Input from '../../Components/Input';
 
 const Podcasts = () => {
 
-  const podcasts = useSelector(state => state.podcasts.podcasts);
+  const [podcasts, setPodcasts] = useState([]);
   const [search, setSearch] = useState('');
   const [filteredPodcast, setFilteredPodcast] = useState([]);
   const dispatch = useDispatch();
@@ -21,8 +20,7 @@ const Podcasts = () => {
         querySnapShot.forEach((doc)=>{
           tempArr.push({ id:doc.id,...doc.data() });
         });
-
-        dispatch(setPodcasts(tempArr));
+        setPodcasts(tempArr);
       },
       error=> {
         console.log(error);

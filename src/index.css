@@ -27,6 +27,10 @@ body{
     
 }
 
+body::-webkit-scrollbar{
+    display: none;
+}
+
 a{
     color: inherit;
     text-decoration: none;
@@ -43,6 +47,8 @@ a{
     width: 60vw;
     margin: auto;
 }
+
+
 
 h1{
     text-align: center;
@@ -118,7 +124,11 @@ h1{
     align-items: center;
 }
 
-.heading > .btn {
+.btn-wrapper{
+    display: flex;
+    gap: 2rem;
+}
+.btn-wrapper > .btn {
     width: fit-content;
 }
 
@@ -222,6 +232,7 @@ h1{
     display: flex;
     flex-direction: column;
     gap: 3rem;
+    border-radius: 2rem;
 }
 
 @media screen and (width <= 865px) {

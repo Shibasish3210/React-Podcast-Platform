@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Navbar from '../../Components/Navbar';
 import Button from '../../Components/Button';
-import { EmailAuthProvider, deleteUser, reauthenticateWithCredential, sendEmailVerification, signOut, updateEmail, updateProfile, verifyBeforeUpdateEmail } from 'firebase/auth';
+import { EmailAuthProvider, reauthenticateWithCredential, updateProfile } from 'firebase/auth';
 import { auth, db, storage } from '../../Config/firebase';
 import { toast } from 'react-toastify';
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
@@ -9,6 +9,7 @@ import { FiEdit3, FiCheck } from "react-icons/fi";
 import Input from '../../Components/Input';
 import { doc, updateDoc } from 'firebase/firestore';
 import PromptCredentials from './PromptCredentials';
+import { handleDeletion, handleEmailUpdation, handleLogOut, handleNameUpdation } from './utils';
 
 const Profile = () => {
     const [name, setName] = useState('');
@@ -30,7 +31,7 @@ const Profile = () => {
         setName(user?.displayName);
         setEmail(user?.email);
         setPhotoURL(user?.photoURL);
-    },[user?.displayName, user?.email, user?.photoURL]);
+    },[user]);
 
     //uploading actual updated image and perform changes on db of user display image
     useEffect(() => {
@@ -88,11 +89,10 @@ const Profile = () => {
             const userCredential = await reauthenticateWithCredential(user, authCredential);
             console.log(userCredential);
             if(isDelAcc){
-                await handleDeletion();
+                await handleDeletion(user);
             }else{
-                // await sendEmailVerification(auth.currentUser);
-                // toast.success('Email Verification Sent');
-                await handleEmailUpdation();
+                await handleEmailUpdation(user,email);
+                setIsEditingEmail(false);
             }
         }catch(err){
             toast.error(err.message);
@@ -106,58 +106,6 @@ const Profile = () => {
         imageRef.current.click();
     }
 
-    //handle changing username of profile
-    const handleNameUpdation = async () => {
-        setIsEditingName(!isEditingName);
-        if(isEditingName){
-            await updateProfile(user, {displayName: name }).catch((error) => {
-                toast.error(error.message);
-            });
-            const docref = doc(db, 'users', user.uid);
-            await updateDoc(docref,{
-                name
-            })
-            toast.success('Name Updated Successfully');
-        }
-    }
-
-    //handle email updation of account
-    const handleEmailUpdation = async () => {
-        try {
-            await verifyBeforeUpdateEmail(user, email);
-            const docref = doc(db, 'users', user.uid);
-            await updateDoc(docref,{
-                email
-            })
-            toast.success('Email Verification Mail Has Been Sent');
-            toast.success('You Will Be Logged Out Once You Verify');
-        } catch (error) {
-            toast.error(error.message);
-        }
-        setIsEditingEmail(false);
-    }
-    
-    //handling Deletion of Account
-    const handleDeletion = async () => {
-        try{
-            await deleteUser(user)
-            toast.success('Account Deleted Successfully');
-        }catch(error){
-            toast.error(error.message);
-        };
-    }
-
-
-    //handling logging out of the account
-    const handleLogOut = () => {
-        signOut(auth)
-            .then(() => {
-                toast.success('Successfully logged out');
-            })
-            .catch((error) => {
-                toast.error(error.message);
-            });
-    }
     
     return (
         <>
@@ -176,7 +124,7 @@ const Profile = () => {
                 <strong>Name : </strong>
                 <div>
                     <Input disabled={!isEditingName} setState={setName} state={name} type="text" placeholder='Enter Your Full Name...' /> 
-                    {isEditingName ? <FiCheck onClick={handleNameUpdation}/> : <FiEdit3 onClick={handleNameUpdation}/>}
+                    {isEditingName ? <FiCheck onClick={()=>handleNameUpdation(setIsEditingName, isEditingName, user, name)}/> : <FiEdit3 onClick={()=>handleNameUpdation(setIsEditingName, isEditingName, user, name)}/>}
                 </div>
             </div> 
             <div>
@@ -197,7 +145,7 @@ const Profile = () => {
          
          <div className="btn-cont">
             <Button value={'Log Out'} exeFunc={handleLogOut}/>
-            <Button value={'Delete Acc'} exeFunc={()=>handleSensitiveData('delete')}/>
+            <Button value={'Delete Account'} exeFunc={()=>handleSensitiveData('delete')}/>
          </div>
         </div>
 

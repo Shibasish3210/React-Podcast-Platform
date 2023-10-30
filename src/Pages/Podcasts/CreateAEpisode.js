@@ -26,8 +26,8 @@ const CreateAnEpisode = () => {
       toast.success('Episode creation started');
       try{
         // Create a reference to displayImage
-        console.log(title , desc , audio, id)
-        const audioRef = ref(storage, `podcast-episodes/${auth.currentUser.uid}/${Date.now()}`);
+        const audioTimeStamp = Date.now();
+        const audioRef = ref(storage, `podcast-episodes/${auth.currentUser.uid}/${audioTimeStamp}`);
         //uploading the display image
         await uploadBytes(audioRef, audio);
 
@@ -37,7 +37,8 @@ const CreateAnEpisode = () => {
         const episodeDetails = {
           title,
           description: desc,
-          audio: downloadAudio
+          audio: downloadAudio,
+          audioTimeStamp: audioTimeStamp.toString()
         }
         
         const docRef = await addDoc(collection(db, `podcasts`, id, `episodes`), episodeDetails);
