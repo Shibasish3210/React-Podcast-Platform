@@ -9,7 +9,7 @@ import { deleteObject, getDownloadURL, ref, uploadBytes } from 'firebase/storage
 import { auth, db, storage } from '../../Config/firebase';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { collection, doc, updateDoc } from 'firebase/firestore';
+import { doc, updateDoc } from 'firebase/firestore';
 
 const EditAnEpisode = () => {
   const [title, setTitle] = useState('');

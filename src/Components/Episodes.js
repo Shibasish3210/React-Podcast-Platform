@@ -4,9 +4,11 @@ import Button from './Button';
 import { FiEdit3 } from 'react-icons/fi';
 import { useNavigate, useParams } from 'react-router-dom';
 import { setCurrEpisode } from '../ReduxToolkit/Slices/currPodcatSlice';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { auth } from '../Config/firebase';
 
 const Episodes = ({ onExe, currPodcastEpisode}) => {
+  const podcastDetails = useSelector(state=>state.podcast.podcast);
   const { id } = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -29,7 +31,7 @@ const Episodes = ({ onExe, currPodcastEpisode}) => {
         <p>{description}</p>
       </div>
       <div className="btn-wrapper">
-        <Button value={<FiEdit3/>} exeFunc={triggerUpdation}/>
+        {auth?.currentUser?.uid === podcastDetails?.owner && <Button value={<FiEdit3/>} exeFunc={triggerUpdation}/>}
         <Button value={<FaPlayCircle/>} exeFunc={()=>onExe(audio)}/>
       </div>
     </div>

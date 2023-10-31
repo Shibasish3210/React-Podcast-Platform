@@ -32,7 +32,8 @@ const PodcastDetails = () => {
                 displayTimeStamp: data?.displayTimeStamp,
                 bannerTimeStamp: data?.bannerTimeStamp,
                 displayImage: data?.displayImage,
-                bannerImage: data?.bannerImage
+                bannerImage: data?.bannerImage,
+                owner: data?.owner
               }));
           }
         }

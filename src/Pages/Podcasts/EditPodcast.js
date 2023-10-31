@@ -34,6 +34,7 @@ async function handlePodcastUpdation() {
     const podcastDetails = {
     title: title,
     description: desc,
+    owner: auth.currentUser.uid
     }
         
         try{
@@ -66,13 +67,23 @@ async function handlePodcastUpdation() {
             const docRef = doc(db, 'podcasts', id);
             await updateDoc(docRef, podcastDetails);
 
-            // Create a reference to the file to delete
-            const displayRef = ref(storage, `podcasts/${auth.currentUser.uid}/${podCastData.bannerTimeStamp}`);
-            const bannerRef = ref(storage, `podcasts/${auth.currentUser.uid}/${podCastData.displayTimeStamp}`);
+            try{
+                if(displayImage){
+                    // Create a reference to the file to delete
+                    const displayRef = ref(storage, `podcasts/${auth.currentUser.uid}/${podCastData.bannerTimeStamp}`);
 
-            // Delete the file
-            displayImage && deleteObject(displayRef);
-            bannerImage && deleteObject(bannerRef);
+                    // Delete the file
+                    displayRef && deleteObject(displayRef);
+                }
+
+                if(bannerImage){
+                    const bannerRef = ref(storage, `podcasts/${auth.currentUser.uid}/${podCastData.displayTimeStamp}`);
+        
+                    bannerRef && deleteObject(bannerRef);
+                }
+            }catch(e){
+                console.log(e);
+            }
             
             toast.success('Podcast updated successfully');
             setLoading(false);
@@ -93,7 +104,7 @@ async function handlePodcastUpdation() {
       <>
           <Navbar/>
           <h1>Edit Podcast</h1>
-          <p style={{color: 'red', textAlign: 'center', marginBottom: '2rem'}}><strong>Caution : </strong>Only Update The Fields Necessery...</p>
+          <p style={{color: 'red', textAlign: 'center', marginBottom: '2rem'}}><strong>Caution : </strong>Please Update Both The Image Fields If You Want To Update 1...</p>
           <div className="form-wrapper">
             <Input setState={setTitle} state={title} type="text" placeholder='Enter Your Podcast Title...' />
             <Input setState={setDesc} state={desc} type="text" placeholder="Enter Your Podcast Description..."/>

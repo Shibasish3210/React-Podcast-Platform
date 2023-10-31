@@ -10,6 +10,8 @@ import Input from '../../Components/Input';
 import { doc, updateDoc } from 'firebase/firestore';
 import PromptCredentials from './PromptCredentials';
 import { handleDeletion, handleEmailUpdation, handleLogOut, handleNameUpdation } from './utils';
+// import { useDispatch } from 'react-redux';
+// import { setUsers } from '../../ReduxToolkit/Slices/userSlice';
 
 const Profile = () => {
     const [name, setName] = useState('');
@@ -25,12 +27,14 @@ const Profile = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [actionType, setActionType] = useState('');
     const imageRef = useRef(null);
+    // const dispatch = useDispatch();
 
     const user = auth.currentUser;
     useEffect(()=>{
         setName(user?.displayName);
         setEmail(user?.email);
         setPhotoURL(user?.photoURL);
+        // dispatch(setUsers({...user}));
     },[user]);
 
     //uploading actual updated image and perform changes on db of user display image
